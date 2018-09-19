@@ -2,6 +2,7 @@ package userdatabase
 
 import (
 	"errors"
+	"sync"
 	"time"
 )
 
@@ -39,8 +40,12 @@ var Users = map[string]string {
 	"compiler": "QaBjyAFV",
 }
 
+var mutex = &sync.Mutex{}
+
 func CheckAuth(login string, password string) (err error)  {
-	time.Sleep(1000)
+	mutex.Lock()
+	time.Sleep(1 * time.Second)
+	mutex.Unlock()
 	if Users[login] == password {
 		return nil
 	} else {
@@ -51,7 +56,9 @@ func CheckAuth(login string, password string) (err error)  {
 func ChangePassword(login string, password string, newPassword string) (err error)  {
 	authErr := CheckAuth(login, password)
 	if authErr == nil {
-		time.Sleep(1000)
+		mutex.Lock()
+		time.Sleep(1 * time.Second)
+		mutex.Unlock()
 		Users[login] = newPassword
 		return nil
 	} else {
